@@ -35,6 +35,7 @@ class ParseClient : NSObject {
             
             guard (error == nil) else {
                 print("There was an error with your request: \(error)")
+                completionHandler(result: nil, error: error)
                 return
             }
             
@@ -46,6 +47,7 @@ class ParseClient : NSObject {
                 } else {
                     print("Your request returned an invalid response!")
                 }
+                completionHandler(result: nil, error: NSError(domain: "Parse API Error", code: 0, userInfo: [NSLocalizedDescriptionKey: "Could not download data"]))
                 return
             }
             
@@ -78,6 +80,7 @@ class ParseClient : NSObject {
             
             guard (error == nil) else {
                 print("There was an error with your request: \(error)")
+                completionHandler(result: nil, error: error)
                 return
             }
             
@@ -89,6 +92,7 @@ class ParseClient : NSObject {
                 } else {
                     print("Your request returned an invalid response!")
                 }
+                completionHandler(result: nil, error: NSError(domain: "Parse API Error", code: 0, userInfo: [NSLocalizedDescriptionKey: "Could not post data"]))
                 return
             }
             

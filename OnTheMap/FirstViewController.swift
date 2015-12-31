@@ -13,15 +13,19 @@ class FirstViewController: UIViewController, MKMapViewDelegate {
 
     @IBOutlet weak var mapView: MKMapView!
     
-    var locations: [StudentLocation] = [StudentLocation]()
-    
     override func viewDidLoad() {
         super.viewDidLoad()
         
         var annotations = [MKPointAnnotation]()
         ParseClient.sharedInstance().getStudentLocations() { (result, error) in
-            if error == nil {
-                self.locations = result!
+            if error != nil {
+                dispatch_async(dispatch_get_main_queue(), {
+                    let alert = UIAlertController(title: "Download Failed", message: "Unable to download list of student locations.", preferredStyle: UIAlertControllerStyle.Alert)
+                    alert.addAction(UIAlertAction(title: "OK", style: UIAlertActionStyle.Default, handler: nil))
+                    self.presentViewController(alert, animated: true, completion: nil)
+                })
+            } else {
+                ParseClient.sharedInstance().locations = result!
                 for location in result! {
                     let lat = CLLocationDegrees(location.lat!)
                     let long = CLLocationDegrees(location.long!)
@@ -74,31 +78,33 @@ class FirstViewController: UIViewController, MKMapViewDelegate {
         }
         
         ParseClient.sharedInstance().getStudentLocations() { (result, error) in
-            if let locations = result {
-                self.locations = locations
-                dispatch_async(dispatch_get_main_queue()) {
-                    var annotations = [MKPointAnnotation]()
-                    for location in ParseClient.sharedInstance().locations {
-                        let lat = CLLocationDegrees(location.lat!)
-                        let long = CLLocationDegrees(location.long!)
-                        
-                        let coordinate = CLLocationCoordinate2D(latitude: lat, longitude: long)
-                        
-                        let first = location.firstName!
-                        let last = location.lastName!
-                        let mediaURL = location.mediaURL
-                        
-                        let annotation = MKPointAnnotation()
-                        annotation.coordinate = coordinate
-                        annotation.title = "\(first) \(last)"
-                        annotation.subtitle = mediaURL
-                        
-                        annotations.append(annotation)
-                    }
-                    self.mapView.addAnnotations(annotations)
-                }
+            if error != nil {
+                dispatch_async(dispatch_get_main_queue(), {
+                    let alert = UIAlertController(title: "Download Failed", message: "Unable to download list of student locations.", preferredStyle: UIAlertControllerStyle.Alert)
+                    alert.addAction(UIAlertAction(title: "OK", style: UIAlertActionStyle.Default, handler: nil))
+                    self.presentViewController(alert, animated: true, completion: nil)
+                })
             } else {
-                print(error)
+                ParseClient.sharedInstance().locations = result!
+                var annotations = [MKPointAnnotation]()
+                for location in result! {
+                    let lat = CLLocationDegrees(location.lat!)
+                    let long = CLLocationDegrees(location.long!)
+                    
+                    let coordinate = CLLocationCoordinate2D(latitude: lat, longitude: long)
+                    
+                    let first = location.firstName!
+                    let last = location.lastName!
+                    let mediaURL = location.mediaURL
+                    
+                    let annotation = MKPointAnnotation()
+                    annotation.coordinate = coordinate
+                    annotation.title = "\(first) \(last)"
+                    annotation.subtitle = mediaURL
+                    
+                    annotations.append(annotation)
+                }
+                self.mapView.addAnnotations(annotations)
             }
         }
     }

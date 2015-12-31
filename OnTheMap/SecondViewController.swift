@@ -12,19 +12,21 @@ class SecondViewController: UIViewController {
 
     @IBOutlet weak var tableView: UITableView!
     
-    var locations: [StudentLocation] = [StudentLocation]()
-    
     override func viewWillAppear(animated: Bool) {
         super.viewWillAppear(animated)
         
         ParseClient.sharedInstance().getStudentLocations() { (result, error) in
-            if let locations = result {
-                self.locations = locations
+            if error != nil {
+                dispatch_async(dispatch_get_main_queue(), {
+                    let alert = UIAlertController(title: "Download Failed", message: "Unable to download list of student locations.", preferredStyle: UIAlertControllerStyle.Alert)
+                    alert.addAction(UIAlertAction(title: "OK", style: UIAlertActionStyle.Default, handler: nil))
+                    self.presentViewController(alert, animated: true, completion: nil)
+                })
+            } else {
+                ParseClient.sharedInstance().locations = result!
                 dispatch_async(dispatch_get_main_queue()) {
                     self.tableView.reloadData()
                 }
-            } else {
-                print(error)
             }
         }
     }
@@ -55,13 +57,17 @@ class SecondViewController: UIViewController {
     
     @IBAction func refreshData(sender: AnyObject) {
         ParseClient.sharedInstance().getStudentLocations() { (result, error) in
-            if let locations = result {
-                self.locations = locations
+            if error != nil {
+                dispatch_async(dispatch_get_main_queue(), {
+                    let alert = UIAlertController(title: "Download Failed", message: "Unable to download list of student locations.", preferredStyle: UIAlertControllerStyle.Alert)
+                    alert.addAction(UIAlertAction(title: "OK", style: UIAlertActionStyle.Default, handler: nil))
+                    self.presentViewController(alert, animated: true, completion: nil)
+                })
+            } else {
+                ParseClient.sharedInstance().locations = result!
                 dispatch_async(dispatch_get_main_queue()) {
                     self.tableView.reloadData()
                 }
-            } else {
-                print(error)
             }
         }
     }
@@ -72,21 +78,22 @@ extension SecondViewController: UITableViewDelegate, UITableViewDataSource {
     func tableView(tableView: UITableView, cellForRowAtIndexPath indexPath: NSIndexPath) -> UITableViewCell {
         
         let cellReuseIdentifier = "tableViewCell"
-        let location = locations[indexPath.row]
-        let cell = tableView.dequeueReusableCellWithIdentifier(cellReuseIdentifier) as UITableViewCell!
+        let location = ParseClient.sharedInstance().locations[indexPath.row]
+        let cell = tableView.dequeueReusableCellWithIdentifier(cellReuseIdentifier) as! TableCellViewController!
         
-        cell.textLabel!.text = "\(location.firstName!) \(location.lastName!)"
-        cell.detailTextLabel!.text = location.mediaURL!
+        cell.nameTextLabel!.text = "\(location.firstName!) \(location.lastName!)"
+        cell.placeTextLabel!.text = location.mapString!
+        cell.urlTextLabel!.text = location.mediaURL!
         return cell
     }
     
     func tableView(tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
-        return locations.count
+        return ParseClient.sharedInstance().locations.count
     }
     
     func tableView(tableView: UITableView, didSelectRowAtIndexPath indexPath: NSIndexPath) {
         let app = UIApplication.sharedApplication()
-        if let toOpen = locations[indexPath.row].mediaURL {
+        if let toOpen = ParseClient.sharedInstance().locations[indexPath.row].mediaURL {
             app.openURL(NSURL(string: toOpen)!)
         }
     }

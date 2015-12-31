@@ -17,7 +17,7 @@ extension UdacityClient {
             self.sessionID = sessionID
             self.userID = userID
             
-            completionHandler(success: success, errorString: "Unable to retrieve session")
+            completionHandler(success: success, errorString: "Wrong email or password")
         }
     }
     
@@ -63,11 +63,11 @@ extension UdacityClient {
                 let newData = data!.subdataWithRange(NSMakeRange(5, data!.length - 5)) /* subset response data! */
                 
                 UdacityClient.parseJSONWithCompletionHandler(newData) { (JSONResult, errorString) in
-                    let sessionId = JSONResult.objectForKey("session")!["id"] as? String
-                    let userId = JSONResult.objectForKey("account")!["key"] as? String
-                    let success = (sessionId!.characters.count > 0 && userId!.characters.count > 0)
+                    let success = JSONResult.objectForKey("account")
                     
-                    if success {
+                    if (success != nil) {
+                        let sessionId = JSONResult.objectForKey("session")!["id"] as? String
+                        let userId = JSONResult.objectForKey("account")!["key"] as? String
                         completionHandler(success: true, sessionId: sessionId, userId: Int(userId!), errorString: nil)
                     } else {
                         print("Could not find correct values in \(JSONResult)")

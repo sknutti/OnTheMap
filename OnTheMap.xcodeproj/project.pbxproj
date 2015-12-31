@@ -26,6 +26,7 @@
 		78DC23C41C3335F800545957 /* Roboto-Regular.ttf in Resources */ = {isa = PBXBuildFile; fileRef = 78DC23C11C3335F800545957 /* Roboto-Regular.ttf */; };
 		78DC23C51C3335F800545957 /* Roboto-Thin.ttf in Resources */ = {isa = PBXBuildFile; fileRef = 78DC23C21C3335F800545957 /* Roboto-Thin.ttf */; };
 		78DC23C71C346BBB00545957 /* Reach.swift in Sources */ = {isa = PBXBuildFile; fileRef = 78DC23C61C346BBB00545957 /* Reach.swift */; };
+		78DC23C91C34D82400545957 /* TableCellViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 78DC23C81C34D82400545957 /* TableCellViewController.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
@@ -50,6 +51,7 @@
 		78DC23C11C3335F800545957 /* Roboto-Regular.ttf */ = {isa = PBXFileReference; lastKnownFileType = file; path = "Roboto-Regular.ttf"; sourceTree = "<group>"; };
 		78DC23C21C3335F800545957 /* Roboto-Thin.ttf */ = {isa = PBXFileReference; lastKnownFileType = file; path = "Roboto-Thin.ttf"; sourceTree = "<group>"; };
 		78DC23C61C346BBB00545957 /* Reach.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Reach.swift; sourceTree = "<group>"; };
+		78DC23C81C34D82400545957 /* TableCellViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = TableCellViewController.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -105,6 +107,7 @@
 				7866637C1C29AE7000E76CE1 /* SecondViewController.swift */,
 				7866638C1C29D0F400E76CE1 /* LoginViewController.swift */,
 				7829BF6C1C33316B005E2EED /* InformationPostingViewController.swift */,
+				78DC23C81C34D82400545957 /* TableCellViewController.swift */,
 			);
 			name = "View Controllers";
 			sourceTree = "<group>";
@@ -226,6 +229,7 @@
 				7866637B1C29AE7000E76CE1 /* FirstViewController.swift in Sources */,
 				786663A01C32194500E76CE1 /* ParseClient.swift in Sources */,
 				786663931C2B044A00E76CE1 /* UdacityConvenience.swift in Sources */,
+				78DC23C91C34D82400545957 /* TableCellViewController.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
