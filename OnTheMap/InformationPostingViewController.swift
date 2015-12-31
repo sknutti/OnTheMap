@@ -86,6 +86,7 @@ class InformationPostingViewController: UIViewController, MKMapViewDelegate, UIT
         let geocoder = CLGeocoder()
         geocoder.geocodeAddressString(address, completionHandler: {(placemarks, error) -> Void in
             if((error) != nil){
+                self.activityIndicator.stopAnimating()
                 let alert = UIAlertController(title: "Error", message: "Error during geocoding", preferredStyle: UIAlertControllerStyle.Alert)
                 alert.addAction(UIAlertAction(title: "OK", style: UIAlertActionStyle.Default, handler: nil))
                 self.presentViewController(alert, animated: true, completion: nil)

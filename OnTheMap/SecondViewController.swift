@@ -23,7 +23,7 @@ class SecondViewController: UIViewController {
                     self.presentViewController(alert, animated: true, completion: nil)
                 })
             } else {
-                ParseClient.sharedInstance().locations = result!
+                StudentLocations.sharedInstance().studentLocations = result!
                 dispatch_async(dispatch_get_main_queue()) {
                     self.tableView.reloadData()
                 }
@@ -64,7 +64,7 @@ class SecondViewController: UIViewController {
                     self.presentViewController(alert, animated: true, completion: nil)
                 })
             } else {
-                ParseClient.sharedInstance().locations = result!
+                StudentLocations.sharedInstance().studentLocations = result!
                 dispatch_async(dispatch_get_main_queue()) {
                     self.tableView.reloadData()
                 }
@@ -78,7 +78,7 @@ extension SecondViewController: UITableViewDelegate, UITableViewDataSource {
     func tableView(tableView: UITableView, cellForRowAtIndexPath indexPath: NSIndexPath) -> UITableViewCell {
         
         let cellReuseIdentifier = "tableViewCell"
-        let location = ParseClient.sharedInstance().locations[indexPath.row]
+        let location = StudentLocations.sharedInstance().studentLocations[indexPath.row]
         let cell = tableView.dequeueReusableCellWithIdentifier(cellReuseIdentifier) as! TableCellViewController!
         
         cell.nameTextLabel!.text = "\(location.firstName!) \(location.lastName!)"
@@ -88,12 +88,12 @@ extension SecondViewController: UITableViewDelegate, UITableViewDataSource {
     }
     
     func tableView(tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
-        return ParseClient.sharedInstance().locations.count
+        return StudentLocations.sharedInstance().studentLocations.count
     }
     
     func tableView(tableView: UITableView, didSelectRowAtIndexPath indexPath: NSIndexPath) {
         let app = UIApplication.sharedApplication()
-        if let toOpen = ParseClient.sharedInstance().locations[indexPath.row].mediaURL {
+        if let toOpen = StudentLocations.sharedInstance().studentLocations[indexPath.row].mediaURL {
             app.openURL(NSURL(string: toOpen)!)
         }
     }

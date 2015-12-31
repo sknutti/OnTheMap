@@ -27,6 +27,7 @@
 		78DC23C51C3335F800545957 /* Roboto-Thin.ttf in Resources */ = {isa = PBXBuildFile; fileRef = 78DC23C21C3335F800545957 /* Roboto-Thin.ttf */; };
 		78DC23C71C346BBB00545957 /* Reach.swift in Sources */ = {isa = PBXBuildFile; fileRef = 78DC23C61C346BBB00545957 /* Reach.swift */; };
 		78DC23C91C34D82400545957 /* TableCellViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 78DC23C81C34D82400545957 /* TableCellViewController.swift */; };
+		78DC23CB1C34F8DE00545957 /* StudentLocations.swift in Sources */ = {isa = PBXBuildFile; fileRef = 78DC23CA1C34F8DE00545957 /* StudentLocations.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
@@ -52,6 +53,7 @@
 		78DC23C21C3335F800545957 /* Roboto-Thin.ttf */ = {isa = PBXFileReference; lastKnownFileType = file; path = "Roboto-Thin.ttf"; sourceTree = "<group>"; };
 		78DC23C61C346BBB00545957 /* Reach.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Reach.swift; sourceTree = "<group>"; };
 		78DC23C81C34D82400545957 /* TableCellViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = TableCellViewController.swift; sourceTree = "<group>"; };
+		78DC23CA1C34F8DE00545957 /* StudentLocations.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = StudentLocations.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -120,6 +122,7 @@
 				7866639F1C32194500E76CE1 /* ParseClient.swift */,
 				786663A31C321CF200E76CE1 /* ParseConvenience.swift */,
 				786663A11C3219E900E76CE1 /* StudentLocation.swift */,
+				78DC23CA1C34F8DE00545957 /* StudentLocations.swift */,
 			);
 			name = Model;
 			sourceTree = "<group>";
@@ -230,6 +233,7 @@
 				786663A01C32194500E76CE1 /* ParseClient.swift in Sources */,
 				786663931C2B044A00E76CE1 /* UdacityConvenience.swift in Sources */,
 				78DC23C91C34D82400545957 /* TableCellViewController.swift in Sources */,
+				78DC23CB1C34F8DE00545957 /* StudentLocations.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

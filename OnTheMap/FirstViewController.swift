@@ -25,7 +25,7 @@ class FirstViewController: UIViewController, MKMapViewDelegate {
                     self.presentViewController(alert, animated: true, completion: nil)
                 })
             } else {
-                ParseClient.sharedInstance().locations = result!
+                StudentLocations.sharedInstance().studentLocations = result!
                 for location in result! {
                     let lat = CLLocationDegrees(location.lat!)
                     let long = CLLocationDegrees(location.long!)
@@ -85,7 +85,7 @@ class FirstViewController: UIViewController, MKMapViewDelegate {
                     self.presentViewController(alert, animated: true, completion: nil)
                 })
             } else {
-                ParseClient.sharedInstance().locations = result!
+                StudentLocations.sharedInstance().studentLocations = result!
                 var annotations = [MKPointAnnotation]()
                 for location in result! {
                     let lat = CLLocationDegrees(location.lat!)
