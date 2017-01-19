@@ -28,7 +28,7 @@ struct StudentLocation {
     init(dictionary: [String : AnyObject]) {
         
         objectId = dictionary["objectId"] as? String
-        uniqueKey = String(UdacityClient.sharedInstance().userID)
+        uniqueKey = String(describing: UdacityClient.sharedInstance().userID)
         firstName = dictionary["firstName"] as? String
         lastName = dictionary["lastName"] as? String
         mapString = dictionary["mapString"] as? String
@@ -38,11 +38,11 @@ struct StudentLocation {
         long = dictionary["longitude"] as? Double
     }
     
-    static func toJSONString(array : [StudentLocation]) -> String {
-        return array.map {$0.jsonRepresentation}.joinWithSeparator(",")
+    static func toJSONString(_ array : [StudentLocation]) -> String {
+        return array.map {$0.jsonRepresentation}.joined(separator: ",")
     }
     
-    static func locationsFromResults(results: [[String : AnyObject]]) -> [StudentLocation] {
+    static func locationsFromResults(_ results: [[String : AnyObject]]) -> [StudentLocation] {
         var locations = [StudentLocation]()
         
         for result in results {

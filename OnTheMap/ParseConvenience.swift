@@ -10,37 +10,37 @@ import Foundation
 
 extension ParseClient {
     
-    func getStudentLocations(completionHandler: (result: [StudentLocation]?, error: NSError?) -> Void) {
+    func getStudentLocations(_ completionHandler: @escaping (_ result: [StudentLocation]?, _ error: NSError?) -> Void) {
         
         let parameters: [String: AnyObject] = [
-            "limit": 100,
+            "limit": 100 as AnyObject,
 //            "skip": 100,
-            "order": "-updatedAt"
+            "order": "-updatedAt" as AnyObject
         ]
         
-        taskForGETMethod(parameters) { JSONResult, error in
+        _ = taskForGETMethod(parameters) { JSONResult, error in
             if let error = error {
-                completionHandler(result: nil, error: error)
+                completionHandler(nil, error)
             } else {
-                if let results = JSONResult["results"] as? [[String : AnyObject]] {
+                if let results = JSONResult?["results"] as? [[String : AnyObject]] {
                     let locations = StudentLocation.locationsFromResults(results)
-                    completionHandler(result: locations, error: nil)
+                    completionHandler(locations, nil)
                 } else {
-                    completionHandler(result: nil, error: NSError(domain: "getStudentLocations parsing", code: 0, userInfo: [NSLocalizedDescriptionKey: "Could not parse getStudentLocations"]))
+                    completionHandler(nil, NSError(domain: "getStudentLocations parsing", code: 0, userInfo: [NSLocalizedDescriptionKey: "Could not parse getStudentLocations"]))
                 }
             }
         }
     }
     
-    func postLocation(jsonBody: String, completionHandler: (result: String?, error: NSError?) -> Void) {
-        taskForPOSTMethod(jsonBody) { JSONResult, error in
+    func postLocation(_ jsonBody: String, completionHandler: @escaping (_ result: String?, _ error: NSError?) -> Void) {
+        _ = taskForPOSTMethod(jsonBody) { JSONResult, error in
             if let error = error {
-                completionHandler(result: nil, error: error)
+                completionHandler(nil, error)
             } else {
-                if let results = JSONResult["objectId"] as? String {
-                    completionHandler(result: results, error: nil)
+                if let results = JSONResult?["objectId"] as? String {
+                    completionHandler(results, nil)
                 } else {
-                    completionHandler(result: nil, error: NSError(domain: "postLocation parsing", code: 0, userInfo: [NSLocalizedDescriptionKey: "Could not parse postLocation response"]))
+                    completionHandler(nil, NSError(domain: "postLocation parsing", code: 0, userInfo: [NSLocalizedDescriptionKey: "Could not parse postLocation response"]))
                 }
             }
         }

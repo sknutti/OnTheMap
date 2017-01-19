@@ -11,42 +11,42 @@ import Foundation
 class ParseClient : NSObject {
     
     /* Shared session */
-    var session: NSURLSession
+    var session: URLSession
     
     var currentStudentLocation: StudentLocation? = StudentLocation()
     
     override init() {
-        session = NSURLSession.sharedSession()
+        session = URLSession.shared
         super.init()
     }
     
-    func taskForGETMethod(parameters: [String : AnyObject], completionHandler: (result: AnyObject!, error: NSError?) -> Void) -> NSURLSessionDataTask {
+    func taskForGETMethod(_ parameters: [String : AnyObject], completionHandler: @escaping (_ result: AnyObject?, _ error: NSError?) -> Void) -> URLSessionDataTask {
         
         let mutableParameters = parameters
         
         let urlString = "https://api.parse.com/1/classes/StudentLocation" + ParseClient.escapedParameters(mutableParameters)
-        let url = NSURL(string: urlString)!
-        let request = NSMutableURLRequest(URL: url)
+        let url = URL(string: urlString)!
+        var request = URLRequest(url: url)
         request.addValue("QrX47CA9cyuGewLdsL7o5Eb8iug6Em8ye0dnAbIr", forHTTPHeaderField: "X-Parse-Application-Id")
         request.addValue("QuWThTdiRmTux3YaDseUSEpUKo7aBYM737yKd4gY", forHTTPHeaderField: "X-Parse-REST-API-Key")
         
-        let task = session.dataTaskWithRequest(request) { (data, response, error) in
+        let task = session.dataTask(with: request, completionHandler: { (data, response, error) in
             
             guard (error == nil) else {
                 print("There was an error with your request: \(error)")
-                completionHandler(result: nil, error: error)
+                completionHandler(nil, error as NSError?)
                 return
             }
             
-            guard let statusCode = (response as? NSHTTPURLResponse)?.statusCode where statusCode >= 200 && statusCode <= 299 else {
-                if let response = response as? NSHTTPURLResponse {
+            guard let statusCode = (response as? HTTPURLResponse)?.statusCode, statusCode >= 200 && statusCode <= 299 else {
+                if let response = response as? HTTPURLResponse {
                     print("Your request returned an invalid response! Status code: \(response.statusCode)!")
                 } else if let response = response {
                     print("Your request returned an invalid response! Response: \(response)!")
                 } else {
                     print("Your request returned an invalid response!")
                 }
-                completionHandler(result: nil, error: NSError(domain: "Parse API Error", code: 0, userInfo: [NSLocalizedDescriptionKey: "Could not download data"]))
+                completionHandler(nil, NSError(domain: "Parse API Error", code: 0, userInfo: [NSLocalizedDescriptionKey: "Could not download data"]))
                 return
             }
             
@@ -56,42 +56,42 @@ class ParseClient : NSObject {
             }
             
             ParseClient.parseJSONWithCompletionHandler(data, completionHandler: completionHandler)
-        }
+        }) 
         
         task.resume()
         
         return task
     }
     
-    func taskForPOSTMethod(jsonBody: String, completionHandler: (result: AnyObject!, error: NSError?) -> Void) -> NSURLSessionDataTask {
+    func taskForPOSTMethod(_ jsonBody: String, completionHandler: @escaping (_ result: AnyObject?, _ error: NSError?) -> Void) -> URLSessionDataTask {
         
         let urlString = "https://api.parse.com/1/classes/StudentLocation"
-        let url = NSURL(string: urlString)!
-        let request = NSMutableURLRequest(URL: url)
-        request.HTTPMethod = "POST"
+        let url = URL(string: urlString)!
+        var request = URLRequest(url: url)
+        request.httpMethod = "POST"
         request.addValue("application/json", forHTTPHeaderField: "Accept")
         request.addValue("application/json", forHTTPHeaderField: "Content-Type")
         request.addValue("QrX47CA9cyuGewLdsL7o5Eb8iug6Em8ye0dnAbIr", forHTTPHeaderField: "X-Parse-Application-Id")
         request.addValue("QuWThTdiRmTux3YaDseUSEpUKo7aBYM737yKd4gY", forHTTPHeaderField: "X-Parse-REST-API-Key")
-        request.HTTPBody = jsonBody.dataUsingEncoding(NSUTF8StringEncoding)
+        request.httpBody = jsonBody.data(using: String.Encoding.utf8)
         
-        let task = session.dataTaskWithRequest(request) { (data, response, error) in
+        let task = session.dataTask(with: request, completionHandler: { (data, response, error) in
             
             guard (error == nil) else {
                 print("There was an error with your request: \(error)")
-                completionHandler(result: nil, error: error)
+                completionHandler(nil, error as NSError?)
                 return
             }
             
-            guard let statusCode = (response as? NSHTTPURLResponse)?.statusCode where statusCode >= 200 && statusCode <= 299 else {
-                if let response = response as? NSHTTPURLResponse {
+            guard let statusCode = (response as? HTTPURLResponse)?.statusCode, statusCode >= 200 && statusCode <= 299 else {
+                if let response = response as? HTTPURLResponse {
                     print("Your request returned an invalid response! Status code: \(response.statusCode)!")
                 } else if let response = response {
                     print("Your request returned an invalid response! Response: \(response)!")
                 } else {
                     print("Your request returned an invalid response!")
                 }
-                completionHandler(result: nil, error: NSError(domain: "Parse API Error", code: 0, userInfo: [NSLocalizedDescriptionKey: "Could not post data"]))
+                completionHandler(nil, NSError(domain: "Parse API Error", code: 0, userInfo: [NSLocalizedDescriptionKey: "Could not post data"]))
                 return
             }
             
@@ -101,7 +101,7 @@ class ParseClient : NSObject {
             }
             
             ParseClient.parseJSONWithCompletionHandler(data, completionHandler: completionHandler)
-        }
+        }) 
         
         task.resume()
         
@@ -109,21 +109,21 @@ class ParseClient : NSObject {
     }
     
     /* Helper: Given raw JSON, return a usable Foundation object */
-    class func parseJSONWithCompletionHandler(data: NSData, completionHandler: (result: AnyObject!, error: NSError?) -> Void) {
+    class func parseJSONWithCompletionHandler(_ data: Data, completionHandler: (_ result: AnyObject?, _ error: NSError?) -> Void) {
         
-        var parsedResult: AnyObject!
+        var parsedResult: Any!
         do {
-            parsedResult = try NSJSONSerialization.JSONObjectWithData(data, options: .AllowFragments)
+            parsedResult = try JSONSerialization.jsonObject(with: data, options: .allowFragments)
         } catch {
             let userInfo = [NSLocalizedDescriptionKey : "Could not parse the data as JSON: '\(data)'"]
-            completionHandler(result: nil, error: NSError(domain: "parseJSONWithCompletionHandler", code: 1, userInfo: userInfo))
+            completionHandler(nil, NSError(domain: "parseJSONWithCompletionHandler", code: 1, userInfo: userInfo))
         }
         
-        completionHandler(result: parsedResult, error: nil)
+        completionHandler(parsedResult as AnyObject?, nil)
     }
     
     /* Helper function: Given a dictionary of parameters, convert to a string for a url */
-    class func escapedParameters(parameters: [String : AnyObject]) -> String {
+    class func escapedParameters(_ parameters: [String : AnyObject]) -> String {
         
         var urlVars = [String]()
         
@@ -133,14 +133,14 @@ class ParseClient : NSObject {
             let stringValue = "\(value)"
             
             /* Escape it */
-            let escapedValue = stringValue.stringByAddingPercentEncodingWithAllowedCharacters(NSCharacterSet.URLQueryAllowedCharacterSet())
+            let escapedValue = stringValue.addingPercentEncoding(withAllowedCharacters: CharacterSet.urlQueryAllowed)
             
             /* Append it */
             urlVars += [key + "=" + "\(escapedValue!)"]
             
         }
         
-        return (!urlVars.isEmpty ? "?" : "") + urlVars.joinWithSeparator("&")
+        return (!urlVars.isEmpty ? "?" : "") + urlVars.joined(separator: "&")
     }
     
     class func sharedInstance() -> ParseClient {

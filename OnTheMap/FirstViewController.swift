@@ -19,10 +19,10 @@ class FirstViewController: UIViewController, MKMapViewDelegate {
         var annotations = [MKPointAnnotation]()
         ParseClient.sharedInstance().getStudentLocations() { (result, error) in
             if error != nil {
-                dispatch_async(dispatch_get_main_queue(), {
-                    let alert = UIAlertController(title: "Download Failed", message: "Unable to download list of student locations.", preferredStyle: UIAlertControllerStyle.Alert)
-                    alert.addAction(UIAlertAction(title: "OK", style: UIAlertActionStyle.Default, handler: nil))
-                    self.presentViewController(alert, animated: true, completion: nil)
+                DispatchQueue.main.async(execute: {
+                    let alert = UIAlertController(title: "Download Failed", message: "Unable to download list of student locations.", preferredStyle: UIAlertControllerStyle.alert)
+                    alert.addAction(UIAlertAction(title: "OK", style: UIAlertActionStyle.default, handler: nil))
+                    self.present(alert, animated: true, completion: nil)
                 })
             } else {
                 StudentLocations.sharedInstance().studentLocations = result!
@@ -48,41 +48,41 @@ class FirstViewController: UIViewController, MKMapViewDelegate {
         }
     }
     
-    @IBAction func logout(sender: AnyObject) {
+    @IBAction func logout(_ sender: AnyObject) {
         UdacityClient.sharedInstance().logout() { (success, errorString) in
             if success {
-                dispatch_async(dispatch_get_main_queue(), {
-                    let controller = self.storyboard!.instantiateViewControllerWithIdentifier("LoginViewController")
-                    self.presentViewController(controller, animated: true, completion: nil)
+                DispatchQueue.main.async(execute: {
+                    let controller = self.storyboard!.instantiateViewController(withIdentifier: "LoginViewController")
+                    self.present(controller, animated: true, completion: nil)
                 })
             } else {
-                dispatch_async(dispatch_get_main_queue(), {
+                DispatchQueue.main.async(execute: {
                     if let errorString = errorString {
-                        let alert = UIAlertController(title: "Logout Failed", message: errorString, preferredStyle: UIAlertControllerStyle.Alert)
-                        alert.addAction(UIAlertAction(title: "OK", style: UIAlertActionStyle.Default, handler: nil))
-                        self.presentViewController(alert, animated: true, completion: nil)
+                        let alert = UIAlertController(title: "Logout Failed", message: errorString, preferredStyle: UIAlertControllerStyle.alert)
+                        alert.addAction(UIAlertAction(title: "OK", style: UIAlertActionStyle.default, handler: nil))
+                        self.present(alert, animated: true, completion: nil)
                     }
                 })
             }
         }
     }
     
-    @IBAction func addStudentLocation(sender: AnyObject) {
-        let controller = self.storyboard!.instantiateViewControllerWithIdentifier("InformationPostingViewController")
-        self.presentViewController(controller, animated: true, completion: nil)
+    @IBAction func addStudentLocation(_ sender: AnyObject) {
+        let controller = self.storyboard!.instantiateViewController(withIdentifier: "InformationPostingViewController")
+        self.present(controller, animated: true, completion: nil)
     }
     
-    @IBAction func refreshData(sender: AnyObject) {
+    @IBAction func refreshData(_ sender: AnyObject) {
         if (mapView.annotations.count > 0) {
             mapView.removeAnnotations( mapView.annotations )
         }
         
         ParseClient.sharedInstance().getStudentLocations() { (result, error) in
             if error != nil {
-                dispatch_async(dispatch_get_main_queue(), {
-                    let alert = UIAlertController(title: "Download Failed", message: "Unable to download list of student locations.", preferredStyle: UIAlertControllerStyle.Alert)
-                    alert.addAction(UIAlertAction(title: "OK", style: UIAlertActionStyle.Default, handler: nil))
-                    self.presentViewController(alert, animated: true, completion: nil)
+                DispatchQueue.main.async(execute: {
+                    let alert = UIAlertController(title: "Download Failed", message: "Unable to download list of student locations.", preferredStyle: UIAlertControllerStyle.alert)
+                    alert.addAction(UIAlertAction(title: "OK", style: UIAlertActionStyle.default, handler: nil))
+                    self.present(alert, animated: true, completion: nil)
                 })
             } else {
                 StudentLocations.sharedInstance().studentLocations = result!
@@ -109,16 +109,16 @@ class FirstViewController: UIViewController, MKMapViewDelegate {
         }
     }
     
-    func mapView(mapView: MKMapView, viewForAnnotation annotation: MKAnnotation) -> MKAnnotationView? {
+    func mapView(_ mapView: MKMapView, viewFor annotation: MKAnnotation) -> MKAnnotationView? {
         
         let reuseId = "pin"
-        var pinView = mapView.dequeueReusableAnnotationViewWithIdentifier(reuseId) as? MKPinAnnotationView
+        var pinView = mapView.dequeueReusableAnnotationView(withIdentifier: reuseId) as? MKPinAnnotationView
         
         if pinView == nil {
             pinView = MKPinAnnotationView(annotation: annotation, reuseIdentifier: reuseId)
             pinView!.canShowCallout = true
-            pinView!.pinTintColor = UIColor.redColor()
-            pinView!.rightCalloutAccessoryView = UIButton(type: .DetailDisclosure)
+            pinView!.pinTintColor = UIColor.red
+            pinView!.rightCalloutAccessoryView = UIButton(type: .detailDisclosure)
         } else {
             pinView!.annotation = annotation
         }
@@ -126,11 +126,11 @@ class FirstViewController: UIViewController, MKMapViewDelegate {
         return pinView
     }
     
-    func mapView(mapView: MKMapView, annotationView view: MKAnnotationView, calloutAccessoryControlTapped control: UIControl) {
+    func mapView(_ mapView: MKMapView, annotationView view: MKAnnotationView, calloutAccessoryControlTapped control: UIControl) {
         if control == view.rightCalloutAccessoryView {
-            let app = UIApplication.sharedApplication()
+            let app = UIApplication.shared
             if let toOpen = view.annotation?.subtitle! {
-                app.openURL(NSURL(string: toOpen)!)
+                app.openURL(URL(string: toOpen)!)
             }
         }
     }

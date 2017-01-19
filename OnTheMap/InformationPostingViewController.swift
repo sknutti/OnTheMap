@@ -25,9 +25,9 @@ class InformationPostingViewController: UIViewController, MKMapViewDelegate, UIT
     
     var studentLocation: StudentLocation? = nil
     
-    override func viewWillAppear(animated: Bool) {
+    override func viewWillAppear(_ animated: Bool) {
         super.viewWillAppear(animated)
-        activityIndicator.hidden = true
+        activityIndicator.isHidden = true
         activityIndicator.hidesWhenStopped = true
         toggleElements(true)
         locationTextView.becomeFirstResponder()
@@ -39,14 +39,14 @@ class InformationPostingViewController: UIViewController, MKMapViewDelegate, UIT
         locationTextView.delegate = self;
         urlTextView.delegate = self;
         
-        dispatch_async(dispatch_get_main_queue(), {
+        DispatchQueue.main.async(execute: {
             UdacityClient.sharedInstance().getUserData() { success, error in
                 /* successfully retrieved name from Udacity */
             }
         })
     }
     
-    func textView(textView: UITextView, shouldChangeTextInRange range: NSRange, replacementText text: String) -> Bool {
+    func textView(_ textView: UITextView, shouldChangeTextIn range: NSRange, replacementText text: String) -> Bool {
         if(text == "\n") {
             textView.resignFirstResponder()
             return false
@@ -54,42 +54,42 @@ class InformationPostingViewController: UIViewController, MKMapViewDelegate, UIT
         return true
     }
     
-    func toggleElements(initial: Bool) {
-        text1.hidden = !initial
-        text2.hidden = !initial
-        text3.hidden = !initial
-        button.hidden = !initial
-        locationTextView.hidden = !initial
+    func toggleElements(_ initial: Bool) {
+        text1.isHidden = !initial
+        text2.isHidden = !initial
+        text3.isHidden = !initial
+        button.isHidden = !initial
+        locationTextView.isHidden = !initial
         
-        urlTextView.hidden = initial
-        map.hidden = initial
-        submitButton.hidden = initial
+        urlTextView.isHidden = initial
+        map.isHidden = initial
+        submitButton.isHidden = initial
     }
     
-    @IBAction func cancelPosting(sender: AnyObject) {
-        let controller = self.storyboard!.instantiateViewControllerWithIdentifier("TabBarController")
-        self.presentViewController(controller, animated: true, completion: nil)
+    @IBAction func cancelPosting(_ sender: AnyObject) {
+        let controller = self.storyboard!.instantiateViewController(withIdentifier: "TabBarController")
+        self.present(controller, animated: true, completion: nil)
     }
     
-    @IBAction func geocodeLocation(sender: AnyObject) {
+    @IBAction func geocodeLocation(_ sender: AnyObject) {
         /* got this code from http://stackoverflow.com/questions/24706885/how-can-i-plot-addresses-in-swift-converting-address-to-longitude-and-latitude */
         activityIndicator.startAnimating()
-        activityIndicator.hidden = false
+        activityIndicator.isHidden = false
         
         let address = locationTextView.text
         ParseClient.sharedInstance().currentStudentLocation?.mapString = address
-        if address.characters.count < 1 {
-            let alert = UIAlertController(title: "Missing Data", message: "You must enter a location to find.", preferredStyle: UIAlertControllerStyle.Alert)
-            alert.addAction(UIAlertAction(title: "OK", style: UIAlertActionStyle.Default, handler: nil))
-            self.presentViewController(alert, animated: true, completion: nil)
+        if (address?.characters.count)! < 1 {
+            let alert = UIAlertController(title: "Missing Data", message: "You must enter a location to find.", preferredStyle: UIAlertControllerStyle.alert)
+            alert.addAction(UIAlertAction(title: "OK", style: UIAlertActionStyle.default, handler: nil))
+            self.present(alert, animated: true, completion: nil)
         }
         let geocoder = CLGeocoder()
-        geocoder.geocodeAddressString(address, completionHandler: {(placemarks, error) -> Void in
+        geocoder.geocodeAddressString(address!, completionHandler: {(placemarks, error) -> Void in
             if((error) != nil){
                 self.activityIndicator.stopAnimating()
-                let alert = UIAlertController(title: "Error", message: "Error during geocoding", preferredStyle: UIAlertControllerStyle.Alert)
-                alert.addAction(UIAlertAction(title: "OK", style: UIAlertActionStyle.Default, handler: nil))
-                self.presentViewController(alert, animated: true, completion: nil)
+                let alert = UIAlertController(title: "Error", message: "Error during geocoding", preferredStyle: UIAlertControllerStyle.alert)
+                alert.addAction(UIAlertAction(title: "OK", style: UIAlertActionStyle.default, handler: nil))
+                self.present(alert, animated: true, completion: nil)
             }
             if let placemark = placemarks?.first {
                 if let coordinates:CLLocationCoordinate2D = placemark.location!.coordinate {
@@ -116,37 +116,37 @@ class InformationPostingViewController: UIViewController, MKMapViewDelegate, UIT
         urlTextView.becomeFirstResponder()
     }
     
-    @IBAction func postLocation(sender: AnyObject) {
+    @IBAction func postLocation(_ sender: AnyObject) {
         ParseClient.sharedInstance().currentStudentLocation?.mediaURL = urlTextView.text
         
         
         let jsonBody = StudentLocation.toJSONString([ParseClient.sharedInstance().currentStudentLocation!])
         ParseClient.sharedInstance().postLocation(jsonBody) { objectId, error in
             if error != nil {
-                dispatch_async(dispatch_get_main_queue(), {
-                    let alert = UIAlertController(title: "Error", message: "Unable to post the location.", preferredStyle: UIAlertControllerStyle.Alert)
-                    alert.addAction(UIAlertAction(title: "OK", style: UIAlertActionStyle.Default, handler: nil))
-                    self.presentViewController(alert, animated: true, completion: nil)
+                DispatchQueue.main.async(execute: {
+                    let alert = UIAlertController(title: "Error", message: "Unable to post the location.", preferredStyle: UIAlertControllerStyle.alert)
+                    alert.addAction(UIAlertAction(title: "OK", style: UIAlertActionStyle.default, handler: nil))
+                    self.present(alert, animated: true, completion: nil)
                 })
             } else {
-                dispatch_async(dispatch_get_main_queue(), {
-                    let controller = self.storyboard!.instantiateViewControllerWithIdentifier("TabBarController")
-                    self.presentViewController(controller, animated: true, completion: nil)
+                DispatchQueue.main.async(execute: {
+                    let controller = self.storyboard!.instantiateViewController(withIdentifier: "TabBarController")
+                    self.present(controller, animated: true, completion: nil)
                 })
             }
         }
     }
     
-    func mapView(mapView: MKMapView, viewForAnnotation annotation: MKAnnotation) -> MKAnnotationView? {
+    func mapView(_ mapView: MKMapView, viewFor annotation: MKAnnotation) -> MKAnnotationView? {
         
         let reuseId = "pin"
-        var pinView = mapView.dequeueReusableAnnotationViewWithIdentifier(reuseId) as? MKPinAnnotationView
+        var pinView = mapView.dequeueReusableAnnotationView(withIdentifier: reuseId) as? MKPinAnnotationView
         
         if pinView == nil {
             pinView = MKPinAnnotationView(annotation: annotation, reuseIdentifier: reuseId)
             pinView!.canShowCallout = true
-            pinView!.pinTintColor = UIColor.redColor()
-            pinView!.rightCalloutAccessoryView = UIButton(type: .DetailDisclosure)
+            pinView!.pinTintColor = UIColor.red
+            pinView!.rightCalloutAccessoryView = UIButton(type: .detailDisclosure)
         } else {
             pinView!.annotation = annotation
         }
